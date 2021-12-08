@@ -11,8 +11,7 @@ public:
     char Employee_Name[50];
     char Employee_postion[50];
     fstream emp;
-
-
+    string headerFile;
 public:
     employee(){}
     employee(const employee &obj){}
@@ -25,6 +24,12 @@ public:
         emp<<Employee_ID<<","<<Employee_Dept_ID<<","<<Employee_Name<<","<<Employee_postion<<"#";
         emp.close();
 
+    }
+    employee GetEmployee(int RNN, fstream &infile) {
+        employee employee;
+        infile.seekg(RNN * 40, ios::beg);
+        infile.read((char*) &employee, sizeof employee);
+        return employee;
     }
 };
 struct PIndex {
@@ -76,12 +81,7 @@ struct SIndexdept {
         return strcmp(Dept_Name, r.Dept_Name) < 0;
     }
 };
-employee GetEmployee(int RNN, fstream &infile) {
-    employee employee;
-    infile.seekg(RNN * 40, ios::beg);
-    infile.read((char*) &employee, sizeof employee);
-    return employee;
-}
+
 int GetRecordRRN(PIndex PrmIndxArray[], int numRec, string ID) {
     int RRN = -1;
     int low = 0, mid, high = numRec - 1;
@@ -100,8 +100,8 @@ int GetRecordRRN(PIndex PrmIndxArray[], int numRec, string ID) {
     return RRN;
 }
 
-string GetEmployeeID(SIndex ScndIndxArray[], int numRec, string Name) {
-    string ID = "";
+char GetEmployeeID(SIndex ScndIndxArray[], int numRec, string Name) {
+    char ID;
     int low = 0, mid, high = numRec - 1;
 
     while (low <= high) {
@@ -111,7 +111,7 @@ string GetEmployeeID(SIndex ScndIndxArray[], int numRec, string Name) {
         else if (Name > ScndIndxArray[mid].Employee_Name)
             low = mid + 1;
         else {
-            ID = ScndIndxArray[mid].Employee_Dept_ID;
+            strcpy(&ID,ScndIndxArray[mid].Employee_Dept_ID);
             break;
         }
     }
@@ -204,7 +204,7 @@ void SearchById(int numRec) {
 
     RRN = GetRecordRRN(PrmIndxArray, numRec, ID);
     cout << RRN << endl;
-    //emp = GetEmployee(RRN, file);
+    emp.GetEmployee(RRN,file);
     cout << endl << "emp ID : " << emp.Employee_ID << "  Name: " << emp.Employee_Name
          << "  department id: " << emp.Employee_Dept_ID << "position: "<<emp.Employee_postion << endl;
 
@@ -252,7 +252,7 @@ void SearchByName(int numRec) {  //// To be updated
     }
     RRN = GetRecordRRN(PrmIndxArray, numRec, ID);
 
-    //emp = GetEmployee(RRN, file);
+    emp.GetEmployee(RRN,file);
     cout << endl << "emp ID : " << emp.Employee_ID << "  Name: " << emp.Employee_Name
          << "  department id: " << emp.Employee_Dept_ID << "position: "<<emp.Employee_postion << endl;
 
@@ -261,10 +261,10 @@ void SearchByName(int numRec) {  //// To be updated
     ScndIndex.close();
 }
 int main() {
-    employee e;
-    department d;
-    e.addemp("12","is","ahmed","student");
-    d.adddept("1","is","ahmed");
+    //employee e;
+    //department d;
+    //e.addemp("12","is","ahmed","student");
+    //d.adddept("1","is","ahmed");
 
     return 0;
 }
