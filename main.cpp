@@ -13,6 +13,7 @@ public:
     fstream emp;
     fstream primaryindex;
     fstream secondry;
+    int RRn;
 
     string headerFile;
 public:
@@ -66,7 +67,9 @@ void addemp(int num) {
     for(int i=0;i<num;i++){
         cout << "\n employee  ID:\n";
         cin.getline(e.Employee_ID, 13);
-        emp << e.Employee_ID << ',';
+        e.RRn=i;
+        emp<<e.RRn<<",";
+        emp << e.Employee_ID << ",";
         p[i].ID=e.Employee_ID;
         p[i].RRN=i;
         s[i].ID_e=e.Employee_ID;
@@ -100,33 +103,38 @@ void addemp(int num) {
 }
 
 //void ReadPrimIndex(PIndex PrmIndxArray[],int numRec,fstream& inFile) {
-//    for(int i =0;i<numRec;i++){
-//        inFile.read((char*)&PrmIndxArray[i].RRN,sizeof(int));
-//        char* tmp=new char[13];
-//        inFile.read(tmp,13);
-//        tmp[9]=0;
-//        PrmIndxArray[i].ID=tmp;
+//    for (int i = 0; i < numRec; i++) {
+//        inFile.read((char *) &PrmIndxArray[i].RRN, sizeof(int));
+//        char *tmp = new char[3];
+//        inFile.read(tmp, 3);
+//        //[] = 0;
+//        PrmIndxArray[i].ID = tmp;
 //    }
+//}
 //void SearchById(int numRec) {
 //    fstream file, PrimIndex;
 //
-//    file.open("file1.txt", ios::in);
-//    PrimIndex.open("Primary.txt", ios::in);
+//    file.open("p_indx.txt", ios::in);
+//   // PrimIndex.open("Primary.txt", ios::in);
 //
 //
 //    PIndex *PrmIndxArray = new PIndex[numRec];
 //    employee *emp = new employee[numRec];
 //
-//    ReadPrimIndex(PrmIndxArray, numRec, PrimIndex);
+//  ReadPrimIndex(PrmIndxArray, numRec, file);
 //
 //
 //    //printing index files
 //
 //    cout << "Primary index" << endl;
-//    for (int i = 0; i < numRec; i++) {
-//        cout << "RRN : " << PrmIndxArray[i].RRN << "  ID:" << PrmIndxArray[i].ID << endl;
+//
+//
+//        cout << " ID:" << PrmIndxArray[numRec].ID << endl;
+//
+//
+//     //   break;
 //    }
-//}
+
 
 class department{
 public:
@@ -150,6 +158,31 @@ struct dsIndex
     string D_n;
     string D_id;
 };
+int  GetRecordRRN( int numRec, string ID) {
+  //  employee e;
+  //  e.emp.open("employee.txt",ios::in);
+  //  e.emp.seekg(numRec, ios::beg);
+    PIndex *p=new PIndex[numRec];
+    int RRN = -1;
+    int low = 0, mid, high = numRec - 1;
+
+    while (low <= high) {
+        mid = (low + high) / 2;
+        if (ID < p[mid].ID)
+            high = mid - 1;
+        else if (ID > p[mid].ID)
+            low = mid + 1;
+        else {
+            RRN = p[mid].RRN;
+          //  ID=p[mid].ID;
+            break;
+        }
+    }
+
+   // cout<<"Id"<<ID;
+    return RRN;
+
+}
 void adddept(int num){
     fstream dept("dept.txt", ios::out);
     department d;
@@ -190,8 +223,10 @@ void adddept(int num){
 int main() {
   //  employee e;
   //department d;
-    addemp(1);
+  // addemp(4);
+ //  cout <<GetRecordRRN(4,"3");
    //adddept(1);
+ // SearchById(4);
 
     return 0;
 }
